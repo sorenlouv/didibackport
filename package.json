@@ -1,0 +1,35 @@
+{
+  "name": "didibackport",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.17.1",
+    "firebase": "^4.8.1",
+    "js-cookie": "^2.2.0",
+    "lodash.flatten": "^4.4.0",
+    "lodash.get": "^4.4.2",
+    "lodash.isempty": "^4.4.0",
+    "lodash.throttle": "^4.1.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.17",
+    "styled-components": "^2.4.0",
+    "timeago.js": "^3.0.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "lint": "eslint ./src",
+    "format": "prettier \"./src/**/*.js\" --write"
+  },
+  "devDependencies": {
+    "eslint": "^4.14.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.4.0",
+    "eslint-plugin-react": "^7.5.1",
+    "prettier": "^1.9.2"
+  }
+}
