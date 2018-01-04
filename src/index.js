@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import './global.css';
 import { initFirebase } from './services/firebase';
@@ -20,13 +20,9 @@ const Container = styled.div`
 const Routes = () => (
   <Router>
     <Container>
+      <Route exact path={`/`} component={withAuthentication(Repositories)} />
       <Route
-        exact
-        path={`${process.env.PUBLIC_URL}/`}
-        component={withAuthentication(Repositories)}
-      />
-      <Route
-        path={`${process.env.PUBLIC_URL}/:owner/:repoName`}
+        path={`/:owner/:repoName`}
         component={withAuthentication(Commits)}
       />
     </Container>

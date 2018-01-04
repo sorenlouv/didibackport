@@ -52,7 +52,7 @@ export default class Repositories extends Component {
               return (
                 <RepositoryContainer key={repo.id}>
                   <h3>
-                    <a href={repo.full_name}>{repo.name}</a>
+                    <a href={`#/${repo.full_name}`}>{repo.name}</a>
                   </h3>
                   <div>{repo.description}</div>
                 </RepositoryContainer>
