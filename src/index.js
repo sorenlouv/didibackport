@@ -20,8 +20,15 @@ const Container = styled.div`
 const Routes = () => (
   <Router>
     <Container>
-      <Route exact path="/" component={withAuthentication(Repositories)} />
-      <Route path="/:owner/:repoName" component={withAuthentication(Commits)} />
+      <Route
+        exact
+        path={`${process.env.PUBLIC_URL}/`}
+        component={withAuthentication(Repositories)}
+      />
+      <Route
+        path={`${process.env.PUBLIC_URL}/:owner/:repoName`}
+        component={withAuthentication(Commits)}
+      />
     </Container>
   </Router>
 );
