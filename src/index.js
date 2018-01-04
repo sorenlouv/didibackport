@@ -12,8 +12,9 @@ initFirebase();
 const Container = styled.div`
   margin-right: auto;
   margin-left: auto;
-  width: 900px;
+  max-width: 900px;
   position: relative;
+  padding: 10px;
 `;
 
 const Routes = () => (

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import get from 'lodash.get';
 
 export function searchRepositories(owner, keyword) {
   const q = [`org:${owner}`, 'in:name', keyword].join(' ');
@@ -7,6 +8,13 @@ export function searchRepositories(owner, keyword) {
     url: `https://api.github.com/search/repositories?q=${q}`
   }).then(res => res.data.items);
 }
+
+const BRANCHES = {
+  v5_6: '5.6',
+  v6_0: '6.0',
+  v6_1: '6.1',
+  v6_x: '6.x'
+};
 
 export function getCommits({ owner, repoName, author = '', size }) {
   return gql({
@@ -29,21 +37,14 @@ export function getCommits({ owner, repoName, author = '', size }) {
         id
       }
       repository(owner: $owner, name: $name) {
-        v5_6: ref(qualifiedName: "5.6") {
-          ...RefFragment
-        }
-        v6_0: ref(qualifiedName: "6.0") {
-          ...RefFragment
-        }
-        v6_1: ref(qualifiedName: "6.1") {
-          ...RefFragment
-        }
-        v6_x: ref(qualifiedName: "6.x") {
-          ...RefFragment
-        }
         master: ref(qualifiedName: "master") {
           ...RefFragment
         }
+        ${Object.keys(BRANCHES).map(
+          branch => `${branch}: ref(qualifiedName: "${BRANCHES[branch]}") {
+            ...RefFragment
+          }`
+        )}
       }
     }
 
@@ -85,15 +86,17 @@ export function getCommits({ owner, repoName, author = '', size }) {
 
 function withBranches(repository) {
   return repository.master.target.history.nodes.map(masterCommit => {
-    masterCommit.branches = ['v5_6', 'v6_0', 'v6_1', 'v6_x']
+    masterCommit.branches = Object.keys(BRANCHES)
       .map(branchName => {
-        const backportCommit = repository[branchName].target.history.nodes.find(
-          commit => {
-            return commit.message.includes(masterCommit.message.split('\n')[0]);
-          }
-        );
+        const backportCommit = get(
+          repository[branchName],
+          'target.history.nodes',
+          []
+        ).find(commit => {
+          return commit.message.includes(masterCommit.message.split('\n')[0]);
+        });
         return {
-          name: branchName,
+          name: BRANCHES[branchName],
           commit: backportCommit && backportCommit.oid
         };
       })

@@ -23,7 +23,7 @@ function withAuthentication(WrappedComponent) {
       return (
         <div>
           {!isLoading && !user && <button onClick={login}>Login</button>}
-          {isLoading && <LoadingSpinner />}
+          {isLoading && <LoadingSpinner center />}
           {isLoggedIn && <WrappedComponent {...this.props} />}
         </div>
       );

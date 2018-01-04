@@ -8,6 +8,7 @@ import { LoadingSpinner, Searchbox } from './UI';
 const RepositoryContainer = styled.div`
   border-bottom: 1px solid #d1d5da;
   padding-bottom: 20px;
+  overflow: hidden;
 `;
 
 export default class Repositories extends Component {
@@ -43,7 +44,7 @@ export default class Repositories extends Component {
           onChange={this.onInputChange}
           placeholder="Search repositories..."
         />
-        {isLoading && <LoadingSpinner />}
+        {isLoading && <LoadingSpinner center />}
 
         <div>
           {!isEmpty(repositories) &&

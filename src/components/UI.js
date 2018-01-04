@@ -3,8 +3,24 @@ import styled from 'styled-components';
 import logo from '../spinner.svg';
 import { units, px, fontSizes } from '../variables';
 
-export function LoadingSpinner(props) {
-  return <img src={logo} alt="Loading..." {...props} />;
+export function LoadingSpinner({ center, ...props }) {
+  return (
+    <img
+      src={logo}
+      alt="Loading..."
+      {...props}
+      style={
+        center
+          ? {
+              top: '100px',
+              left: '50%',
+              position: 'absolute',
+              transform: 'translateX(-50%)'
+            }
+          : {}
+      }
+    />
+  );
 }
 
 export const Searchbox = styled.input`
@@ -18,7 +34,7 @@ export const Searchbox = styled.input`
   border: 1px solid #d1d5da;
   border-radius: ${px(units.quarter)};
   outline: none;
-  width: calc(100% - 100px);
+  width: calc(100% - 10px);
   margin: 20px 0;
 
   &::placeholder {

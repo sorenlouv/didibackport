@@ -22,7 +22,7 @@ class Commits extends Component {
     const { commits, isLoading } = this.state;
 
     if (isLoading) {
-      return <LoadingSpinner />;
+      return <LoadingSpinner center />;
     }
 
     if (isEmpty(commits)) {
