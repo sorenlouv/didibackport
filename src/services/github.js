@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import get from 'lodash.get';
+import memoize from 'lodash.memoize';
 
 export function searchRepositories(owner, keyword) {
   const q = [`org:${owner}`, 'in:name', keyword].join(' ');
@@ -111,31 +112,37 @@ export function isAccessTokenValid() {
     .catch(() => false);
 }
 
-export function gql({ query, variables }) {
-  const opts = {
-    url: 'https://api.github.com/graphql',
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${getAccessToken()}`
-    },
-    data: {
-      query,
-      variables
-    }
-  };
-  return axios(opts);
-}
+const gql = memoize(
+  ({ query, variables }) => {
+    const opts = {
+      url: 'https://api.github.com/graphql',
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${getAccessToken()}`
+      },
+      data: {
+        query,
+        variables
+      }
+    };
+    return axios(opts);
+  },
+  opts => JSON.stringify(opts)
+);
 
-function req(options) {
-  const opts = {
-    ...options,
-    params: {
-      ...options.params,
-      access_token: getAccessToken()
-    }
-  };
-  return axios(opts);
-}
+const req = memoize(
+  options => {
+    const opts = {
+      ...options,
+      params: {
+        ...options.params,
+        access_token: getAccessToken()
+      }
+    };
+    return axios(opts);
+  },
+  opts => JSON.stringify(opts)
+);
 
 const COOKIE_NAME = 'github_access_token';
 

@@ -14,7 +14,7 @@ const Container = styled.div`
   margin-left: auto;
   max-width: 900px;
   position: relative;
-  padding: 10px;
+  padding: 0 10px;
 `;
 
 const Routes = () => (
