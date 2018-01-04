@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { login, onAuthChangeState } from '../services/github';
+import { login, onAuthChangeState } from '../services/firebase';
 import isEmpty from 'lodash.isempty';
 import { LoadingSpinner } from './UI';
 

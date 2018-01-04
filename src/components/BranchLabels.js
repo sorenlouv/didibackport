@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import isEmpty from 'lodash.isempty';
 import { units, px } from '../variables';
-import { getBranchesForCommit } from '../services/github';
-import { LoadingSpinner } from './UI';
 
 const BranchLabel = styled.div`
   display: inline-block;
@@ -18,45 +16,26 @@ const BranchLabel = styled.div`
   }
 `;
 
-class BranchLabels extends Component {
-  state = {
-    branches: [],
-    isLoading: false
-  };
-
-  async componentDidMount() {
-    const { owner, repoName, commit } = this.props;
-    this.setState({ isLoading: true });
-
-    const branches = await getBranchesForCommit(owner, repoName, commit);
-    this.setState({ isLoading: false, branches });
+function BranchLabels({ owner, repoName, commit }) {
+  if (isEmpty(commit)) {
+    return null;
   }
 
-  componentWillReceiveProps() {
-    console.log('TODO: should I fetch data?');
-  }
-
-  render() {
-    const { branches, isLoading } = this.state;
-
-    if (isLoading) {
-      return <LoadingSpinner />;
-    }
-
-    if (isEmpty(branches)) {
-      return null;
-    }
-
-    return (
-      <div>
-        {branches.map(branch => (
-          <BranchLabel key={branch.name}>
-            <a href={branch.url}>{branch.name}</a>{' '}
-          </BranchLabel>
-        ))}
-      </div>
-    );
-  }
+  return (
+    <div>
+      {commit.branches.map(branch => (
+        <BranchLabel key={branch.name}>
+          <a
+            href={`https://github.com/${owner}/${repoName}/commit/${
+              branch.commit
+            }`}
+          >
+            {branch.name}
+          </a>{' '}
+        </BranchLabel>
+      ))}
+    </div>
+  );
 }
 
 export default BranchLabels;

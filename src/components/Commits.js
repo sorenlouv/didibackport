@@ -10,12 +10,11 @@ class Commits extends Component {
     isLoading: false
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const { owner, repoName } = this.props.match.params;
     this.setState({ isLoading: true });
-    getCommits(owner, repoName, { author: 'sqren' }).then(commits => {
-      this.setState({ isLoading: false, commits });
-    });
+    const commits = await getCommits({ owner, repoName, size: 20 });
+    this.setState({ isLoading: false, commits });
   }
 
   render() {
@@ -27,12 +26,12 @@ class Commits extends Component {
     }
 
     if (isEmpty(commits)) {
-      return null;
+      return 'No commits were found';
     }
 
     return commits.map(commit => (
       <Commit
-        key={commit.sha}
+        key={commit.oid}
         owner={owner}
         repoName={repoName}
         commit={commit}

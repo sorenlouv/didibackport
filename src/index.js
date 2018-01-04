@@ -3,11 +3,10 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import './global.css';
-import { initFirebase } from './services/github';
+import { initFirebase } from './services/firebase';
 import Repositories from './components/Repositories';
 import Commits from './components/Commits';
 import withAuthentication from './components/withAuthentication';
-
 initFirebase();
 
 const Container = styled.div`

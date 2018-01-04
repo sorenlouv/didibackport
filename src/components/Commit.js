@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoadingSpinner, Header } from './UI';
+import { Header } from './UI';
 import timeagojs from 'timeago.js';
 import styled from 'styled-components';
 import { units, px } from '../variables';
@@ -22,39 +22,51 @@ const RightColumn = styled.div`
 
 const Avatar = styled.img`
   border-radius: ${px(units.quarter)};
+  width: 72px;
 `;
 
 export default function Commit({ owner, repoName, commit }) {
-  const { shortMessage, prNumber } = parseCommitMessage(commit.commit.message);
+  const { shortMessage, prNumber } = parseCommitMessage(commit);
   return (
-    <CommitContainer key={commit.sha}>
+    <CommitContainer key={commit.oid}>
       <div>
         <Avatar
-          src={`${commit.author.avatar_url}&s=72`}
-          alt={commit.commit.author.name}
+          src={`${commit.author.avatarUrl}&s=72`}
+          alt={commit.author.name}
         />
       </div>
       <RightColumn>
         <Header>
           <a
-            title={commit.commit.message}
+            title={commit.message}
             href={`https://github.com/${owner}/${repoName}/commit/${
-              commit.sha
+              commit.oid
             }`}
           >
             {shortMessage}
           </a>
-          (<a href={`https://github.com/${owner}/${repoName}/pull/${prNumber}`}>
-            #{prNumber}
-          </a>)
+          {prNumber && (
+            <span>
+              (
+              <a
+                href={`https://github.com/${owner}/${repoName}/pull/${prNumber}`}
+              >
+                #{prNumber}
+              </a>
+              )
+            </span>
+          )}
         </Header>
 
         <BranchLabels owner={owner} repoName={repoName} commit={commit} />
 
         <div>
-          {commit.commit.author.name} committed{' '}
-          <span title={commit.commit.committer.date}>
-            {timeago.format(commit.commit.committer.date)}
+          <a href={`https://github.com/${commit.author.user.login}`}>
+            {commit.author.name}
+          </a>{' '}
+          committed{' '}
+          <span title={commit.author.date}>
+            {timeago.format(commit.author.date)}
           </span>
         </div>
       </RightColumn>
@@ -62,10 +74,8 @@ export default function Commit({ owner, repoName, commit }) {
   );
 }
 
-function parseCommitMessage(message) {
-  const [shortMessage, prNumber] = message
-    .split('\n\n')[0]
-    .split(/\(#(\d+)\)$/);
-
+function parseCommitMessage(commit) {
+  const prNumber = commit.message.split(/\(#(\d+)\)/)[1];
+  const shortMessage = commit.messageHeadline.split(/\(#(\d+)\)/)[0];
   return { shortMessage, prNumber };
 }
