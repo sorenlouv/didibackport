@@ -82,28 +82,30 @@ export function getCommits({ owner, repoName, author = '', size }) {
         oid
       }
     }`
-  }).then(res => withBranches(res.data.data.repository));
+  }).then(res => withBranches(res.data.data.repository, size));
 }
 
-function withBranches(repository) {
-  return repository.master.target.history.nodes.map(masterCommit => {
-    masterCommit.branches = Object.keys(BRANCHES)
-      .map(branchName => {
-        const backportCommit = get(
-          repository[branchName],
-          'target.history.nodes',
-          []
-        ).find(commit => {
-          return commit.message.includes(masterCommit.message.split('\n')[0]);
-        });
-        return {
-          name: BRANCHES[branchName],
-          commit: backportCommit && backportCommit.oid
-        };
-      })
-      .filter(item => item.commit);
-    return masterCommit;
-  });
+function withBranches(repository, size) {
+  return repository.master.target.history.nodes
+    .slice(0, size - 10) // Hack to avoid getting commits where the backported commit is too old to be in top 100
+    .map(masterCommit => {
+      masterCommit.branches = Object.keys(BRANCHES)
+        .map(branchName => {
+          const backportCommit = get(
+            repository[branchName],
+            'target.history.nodes',
+            []
+          ).find(commit => {
+            return commit.message.includes(masterCommit.message.split('\n')[0]);
+          });
+          return {
+            name: BRANCHES[branchName],
+            commit: backportCommit && backportCommit.oid
+          };
+        })
+        .filter(item => item.commit);
+      return masterCommit;
+    });
 }
 
 export function getAuthor() {
