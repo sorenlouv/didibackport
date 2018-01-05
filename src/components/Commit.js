@@ -61,7 +61,10 @@ export default function Commit({ owner, repoName, commit }) {
         <BranchLabels owner={owner} repoName={repoName} commit={commit} />
 
         <div>
-          <a href={`https://github.com/${commit.author.user.login}`}>
+          <a
+            href={`https://github.com/${commit.author.user.login}`}
+            style={{ color: '#000000' }}
+          >
             {commit.author.name}
           </a>{' '}
           committed{' '}
