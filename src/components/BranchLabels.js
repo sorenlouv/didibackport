@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import isEmpty from 'lodash.isempty';
-import { units, px } from '../variables';
+import { units, px, colors } from '../variables';
 
 const BranchLabel = styled.div`
   display: inline-block;
@@ -16,6 +16,15 @@ const BranchLabel = styled.div`
   }
 `;
 
+const EmptyState = styled.span`
+  font-style: italic;
+  color: ${colors.maroon};
+`;
+
+const PreText = styled.span`
+  margin-right: ${px(units.quarter)};
+`;
+
 function BranchLabels({ owner, repoName, commit }) {
   if (isEmpty(commit)) {
     return null;
@@ -23,6 +32,11 @@ function BranchLabels({ owner, repoName, commit }) {
 
   return (
     <div>
+      {isEmpty(commit.branches) ? (
+        <EmptyState>Not backported</EmptyState>
+      ) : (
+        <PreText>Backported to:</PreText>
+      )}
       {commit.branches.map(branch => (
         <BranchLabel key={branch.name}>
           <a
