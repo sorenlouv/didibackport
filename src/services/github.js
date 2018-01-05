@@ -30,7 +30,7 @@ export function getCommits({ owner, repoName, author = '', size }) {
     query CommitsAcrossBranches(
       $owner: String!
       $name: String!
-      $author: String!
+      $author: ID!
       $hasAuthor: Boolean!
       $size: Int = 10
     ) {
@@ -55,7 +55,7 @@ export function getCommits({ owner, repoName, author = '', size }) {
       target {
         ... on Commit {
           id
-          history(first: $size, author: { emails: [$author] })
+          history(first: $size, author: { id: $author })
             @include(if: $hasAuthor) {
             ...HistoryFragment
           }
@@ -106,8 +106,18 @@ function withBranches(repository) {
   });
 }
 
+export function getAuthor() {
+  return gql({
+    query: `query GetAuthor {
+      viewer {
+        id
+      }
+    }`
+  }).then(res => res.data.data.viewer.id);
+}
+
 export function isAccessTokenValid() {
-  return req({ url: 'https://api.github.com/user' })
+  return getAuthor()
     .then(() => true)
     .catch(() => false);
 }

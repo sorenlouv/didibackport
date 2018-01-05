@@ -3,12 +3,36 @@ import isEmpty from 'lodash.isempty';
 import throttle from 'lodash.throttle';
 import styled from 'styled-components';
 import { searchRepositories } from '../services/github';
-import { LoadingSpinner, Searchbox } from './UI';
+import { LoadingSpinner } from './UI';
+import { fontSizes, px, units } from '../variables';
 
 const RepositoryContainer = styled.div`
   border-bottom: 1px solid #d1d5da;
-  padding-bottom: 20px;
+  padding: ${px(units.plus)} 0;
   overflow: hidden;
+`;
+
+const HeaderLink = styled.a`
+  font-size: ${fontSizes.xlarge};
+`;
+
+const Searchbox = styled.input`
+  font-size: ${fontSizes.large};
+  padding: ${px(units.quarter)};
+  height: ${px(units.double)};
+  line-height: ${px(units.double)};
+  color: #24292e;
+  vertical-align: middle;
+  background-color: #fff;
+  border: 1px solid #d1d5da;
+  border-radius: ${px(units.quarter)};
+  outline: none;
+  width: calc(100% - ${px(units.half)});
+  margin-top: ${px(units.plus)};
+
+  &::placeholder {
+    color: #bbb;
+  }
 `;
 
 export default class Repositories extends Component {
@@ -51,9 +75,10 @@ export default class Repositories extends Component {
             repositories.map(repo => {
               return (
                 <RepositoryContainer key={repo.id}>
-                  <h3>
-                    <a href={`#/${repo.full_name}`}>{repo.name}</a>
-                  </h3>
+                  <HeaderLink href={`#/${repo.full_name}`}>
+                    {repo.name}
+                  </HeaderLink>
+
                   <div>{repo.description}</div>
                 </RepositoryContainer>
               );

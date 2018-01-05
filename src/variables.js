@@ -20,19 +20,35 @@ export function pct(value) {
   return `${value}%`;
 }
 
+export const colors = {
+  aqua: '#7FDBFF',
+  black: '#111111',
+  blue: '#0074D9',
+  fuchsia: '#F012BE',
+  gray: '#AAAAAA',
+  green: '#2ECC40',
+  lime: '#01FF70',
+  maroon: '#85144B',
+  navy: '#001F3F',
+  olive: '#3D9970',
+  orange: '#FF851B',
+  purple: '#B10DC9',
+  red: '#FF4136',
+  silver: '#DDDDDD',
+  teal: '#39CCCC',
+  white: '#FFFFFF',
+  yellow: '#FFDC00'
+};
+
 // Styling
-export const borderRadius = '5px';
-export const colors = {};
+export const borderRadius = '4px';
 
 // Font sizes
-export const fontSize = '14px';
 export const fontSizes = {
-  tiny: '10px',
   small: '12px',
-  large: '16px',
-  xlarge: '18px',
-  xxlarge: '20px',
-  xxxlarge: '30px'
+  normal: '16px',
+  large: '18px',
+  xlarge: '24px'
 };
 
 export function truncate(width) {

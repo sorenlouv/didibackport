@@ -32,11 +32,9 @@ function getAccessTokenFromRedirectResult() {
 export function onAuthChangeState(authStateChangeCallback) {
   // listen for auth updates
   firebase.auth().onAuthStateChanged(() => {
-    isAccessTokenValid()
-      .then(isValid =>
-        authStateChangeCallback(isValid ? firebase.auth().currentUser : null)
-      )
-      .catch(e => console.error('Could not verify accessToken', e));
+    isAccessTokenValid().then(isValid =>
+      authStateChangeCallback(isValid ? firebase.auth().currentUser : null)
+    );
   });
 }
 

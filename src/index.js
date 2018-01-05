@@ -7,6 +7,7 @@ import { initFirebase } from './services/firebase';
 import Repositories from './components/Repositories';
 import Commits from './components/Commits';
 import withAuthentication from './components/withAuthentication';
+import { units, px } from './variables';
 initFirebase();
 
 const Container = styled.div`
@@ -14,7 +15,7 @@ const Container = styled.div`
   margin-left: auto;
   max-width: 900px;
   position: relative;
-  padding: 0 10px;
+  padding: 0 ${px(units.half)};
 `;
 
 const Routes = () => (

@@ -12,7 +12,7 @@ export function LoadingSpinner({ center, ...props }) {
       style={
         center
           ? {
-              top: '100px',
+              top: px(units.double * 3),
               left: '50%',
               position: 'absolute',
               transform: 'translateX(-50%)'
@@ -23,26 +23,7 @@ export function LoadingSpinner({ center, ...props }) {
   );
 }
 
-export const Searchbox = styled.input`
-  font-size: ${fontSizes.xlarge};
-  padding: ${px(units.quarter)};
-  height: ${px(units.double)};
-  line-height: ${px(units.double)};
-  color: #24292e;
-  vertical-align: middle;
-  background-color: #fff;
-  border: 1px solid #d1d5da;
-  border-radius: ${px(units.quarter)};
-  outline: none;
-  width: calc(100% - 10px);
-  margin: 20px 0;
-
-  &::placeholder {
-    color: #bbb;
-  }
-`;
-
 export const Header = styled.div`
-  font-size: ${fontSizes.xlarge};
+  font-size: ${fontSizes.large};
   font-weight: 600;
 `;
