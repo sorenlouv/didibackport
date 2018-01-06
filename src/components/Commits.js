@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { getCommits, getAuthor } from '../services/github';
+import { getCommits, getAuthorId } from '../services/github';
 import isEmpty from 'lodash.isempty';
+import styled from 'styled-components';
 import { LoadingSpinner } from './UI';
 import Commit from './Commit';
-import styled from 'styled-components';
 import { colors, units, px, fontSizes } from '../variables';
-import Checkbox from './Checkbox';
-import { toQuery, fromQuery, getBoolParam } from '../services/url';
+import { toQuery, getBoolParam } from '../services/url';
+import Settings from './Settings';
 
 const HeaderSection = styled.div`
   text-align: center;
@@ -27,12 +27,6 @@ const BackButton = styled.div`
   }
 `;
 
-const Settings = styled.div`
-  display: flex;
-  padding: ${px(units.half)};
-  justify-content: center;
-`;
-
 const EmptyState = styled.div`
   margin-top: ${px(units.triple)};
   text-align: center;
@@ -43,26 +37,6 @@ class Commits extends Component {
   state = {
     commits: [],
     isLoading: false
-  };
-
-  onMissingBackportsChange = isChecked => {
-    this.updateSearch({ missingBackport: isChecked });
-  };
-
-  onAuthorChange = isChecked => {
-    this.updateSearch({ own: isChecked });
-  };
-
-  updateSearch = nextParams => {
-    const { history, location } = this.props;
-
-    history.replace({
-      ...location,
-      search: fromQuery({
-        ...toQuery(location.search),
-        ...nextParams
-      })
-    });
   };
 
   async componentDidMount() {
@@ -79,9 +53,11 @@ class Commits extends Component {
     const { owner, repoName } = props.match.params;
     const onlyOwn = getBoolParam(props.location, 'own');
     const onlyMissing = getBoolParam(props.location, 'missingBackport');
+    const authorId = toQuery(props.location.search).author;
+
     this.setState({ isLoading: true });
 
-    const author = onlyOwn ? await getAuthor() : undefined;
+    const author = onlyOwn ? await getAuthorId() : authorId;
     const commits = (await getCommits({
       owner,
       repoName,
@@ -93,6 +69,7 @@ class Commits extends Component {
   }
 
   render() {
+    const { history, location } = this.props;
     const { owner, repoName } = this.props.match.params;
     const { commits, isLoading } = this.state;
 
@@ -107,19 +84,7 @@ class Commits extends Component {
           </div>
         </HeaderSection>
 
-        <Settings>
-          <Checkbox
-            checked={getBoolParam(this.props.location, 'own')}
-            label="Only my commits"
-            onChange={this.onAuthorChange}
-          />
-
-          <Checkbox
-            checked={getBoolParam(this.props.location, 'missingBackport')}
-            label="Only commits without backports"
-            onChange={this.onMissingBackportsChange}
-          />
-        </Settings>
+        <Settings location={location} history={history} />
 
         {isLoading && <LoadingSpinner center />}
         {!isLoading &&

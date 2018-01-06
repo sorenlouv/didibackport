@@ -71,6 +71,7 @@ export function getCommits({ owner, repoName, author = '', size }) {
       nodes {
         author {
           user {
+            id
             login
           }
           avatarUrl
@@ -108,7 +109,7 @@ function withBranches(repository, size) {
     });
 }
 
-export function getAuthor() {
+export function getAuthorId() {
   return gql({
     query: `query GetAuthor {
       viewer {
@@ -119,7 +120,7 @@ export function getAuthor() {
 }
 
 export function isAccessTokenValid() {
-  return getAuthor()
+  return getAuthorId()
     .then(() => true)
     .catch(() => false);
 }
@@ -137,7 +138,13 @@ const gql = memoize(
         variables
       }
     };
-    return axios(opts);
+    return axios(opts).then(res => {
+      if (res.data.errors) {
+        console.error(res.data.errors);
+        throw new Error('Error in graphql response');
+      }
+      return res;
+    });
   },
   opts => JSON.stringify(opts)
 );

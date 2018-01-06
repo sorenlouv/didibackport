@@ -62,7 +62,7 @@ export default function Commit({ owner, repoName, commit }) {
 
         <div>
           <a
-            href={`https://github.com/${commit.author.user.login}`}
+            href={`#/${owner}/${repoName}?author=${commit.author.user.id}`}
             style={{ color: '#000000' }}
           >
             {commit.author.name}
