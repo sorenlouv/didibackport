@@ -11,7 +11,7 @@ export function searchRepositories(owner, keyword) {
       searchquery: `org:${owner} in:name ${keyword}`
     },
     query: `query ($searchquery: String!) {
-      search(query: $searchquery, type: REPOSITORY, first: 10) {
+      search(query: $searchquery, type: REPOSITORY, first: 50) {
         nodes {
           ... on Repository {
             name
