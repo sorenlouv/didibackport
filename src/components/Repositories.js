@@ -46,7 +46,7 @@ export default class Repositories extends Component {
     const owner = 'elastic';
     const repositories = await searchRepositories(owner, searchQuery);
     this.setState({ isLoading: false, repositories });
-  }, 1000);
+  }, 200);
 
   onInputChange = e => {
     this.setState({ isLoading: true });
@@ -59,8 +59,8 @@ export default class Repositories extends Component {
     this.searchRepos('');
   }
 
-  incrementRepoCounter = repoId => {
-    incrementRepoCounter(repoId);
+  incrementRepoCounter = repoName => {
+    incrementRepoCounter(repoName);
   };
 
   render() {
@@ -78,10 +78,10 @@ export default class Repositories extends Component {
           {!isEmpty(repositories) &&
             repositories.map(repo => {
               return (
-                <RepositoryContainer key={repo.id}>
+                <RepositoryContainer key={repo.name}>
                   <HeaderLink
-                    href={`#/${repo.full_name}`}
-                    onClick={() => this.incrementRepoCounter(repo.id)}
+                    href={`#/elastic/${repo.name}`}
+                    onClick={() => this.incrementRepoCounter(repo.name)}
                   >
                     {repo.name}
                   </HeaderLink>

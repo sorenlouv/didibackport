@@ -6,19 +6,34 @@ const LS_REPOSITORIES = 'repositories_with_counter';
 const LS_ACCESS_TOKEN = 'github_access_token';
 
 export function searchRepositories(owner, keyword) {
-  const q = [`org:${owner}`, 'in:name', keyword].join(' ');
-  return req({
-    url: `https://api.github.com/search/repositories?q=${q}`
-  }).then(res => sortRepositories(res.data.items));
+  return gql({
+    variables: {
+      searchquery: `org:${owner} in:name ${keyword}`
+    },
+    query: `query ($searchquery: String!) {
+      search(query: $searchquery, type: REPOSITORY, first: 10) {
+        nodes {
+          ... on Repository {
+            name
+            description
+          }
+        }
+      }
+    }`
+  }).then(res => getSortedRepos(res.data.data.search.nodes));
 }
 
-export function sortRepositories(repositories) {
-  const repos = getCountPerRepo();
-  return repositories.concat().sort((a, b) => {
-    if ((repos[a.id] || 0) > (repos[b.id] || 0)) return -1;
-    if ((repos[a.id] || 0) < (repos[b.id] || 0)) return 1;
+export function getSortedRepos(repositories) {
+  console.log('getSortedRepos');
+  const repoCounts = getCountPerRepo();
+
+  const sorted = repositories.concat().sort((a, b) => {
+    if ((repoCounts[a.name] || 0) > (repoCounts[b.name] || 0)) return -1;
+    if ((repoCounts[a.name] || 0) < (repoCounts[b.name] || 0)) return 1;
     return 0;
   });
+
+  return sorted;
 }
 
 function getCountPerRepo() {
@@ -29,11 +44,11 @@ function getCountPerRepo() {
   }
 }
 
-export function incrementRepoCounter(repoId) {
+export function incrementRepoCounter(repoName) {
   const currentRepos = getCountPerRepo();
   const nextRepos = {
     ...currentRepos,
-    [repoId]: get(currentRepos, repoId, 0) + 1
+    [repoName]: get(currentRepos, repoName, 0) + 1
   };
 
   localStorage.setItem(LS_REPOSITORIES, JSON.stringify(nextRepos));
@@ -174,20 +189,6 @@ const gql = memoize(
       }
       return res;
     });
-  },
-  opts => JSON.stringify(opts)
-);
-
-const req = memoize(
-  options => {
-    const opts = {
-      ...options,
-      params: {
-        ...options.params,
-        access_token: getAccessToken()
-      }
-    };
-    return axios(opts);
   },
   opts => JSON.stringify(opts)
 );
