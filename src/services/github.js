@@ -1,13 +1,42 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import get from 'lodash.get';
 import memoize from 'lodash.memoize';
+
+const LS_REPOSITORIES = 'repositories_with_counter';
+const LS_ACCESS_TOKEN = 'github_access_token';
 
 export function searchRepositories(owner, keyword) {
   const q = [`org:${owner}`, 'in:name', keyword].join(' ');
   return req({
     url: `https://api.github.com/search/repositories?q=${q}`
-  }).then(res => res.data.items);
+  }).then(res => sortRepositories(res.data.items));
+}
+
+export function sortRepositories(repositories) {
+  const repos = getCountPerRepo();
+  return repositories.concat().sort((a, b) => {
+    if ((repos[a.id] || 0) > (repos[b.id] || 0)) return -1;
+    if ((repos[a.id] || 0) < (repos[b.id] || 0)) return 1;
+    return 0;
+  });
+}
+
+function getCountPerRepo() {
+  try {
+    return JSON.parse(localStorage.getItem(LS_REPOSITORIES)) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+export function incrementRepoCounter(repoId) {
+  const currentRepos = getCountPerRepo();
+  const nextRepos = {
+    ...currentRepos,
+    [repoId]: get(currentRepos, repoId, 0) + 1
+  };
+
+  localStorage.setItem(LS_REPOSITORIES, JSON.stringify(nextRepos));
 }
 
 const BRANCHES = {
@@ -163,12 +192,10 @@ const req = memoize(
   opts => JSON.stringify(opts)
 );
 
-const COOKIE_NAME = 'github_access_token';
-
 export function setAccessToken(accessToken) {
-  return Cookies.set(COOKIE_NAME, accessToken);
+  return localStorage.setItem(LS_ACCESS_TOKEN, accessToken);
 }
 
 function getAccessToken() {
-  return Cookies.get(COOKIE_NAME);
+  return localStorage.getItem(LS_ACCESS_TOKEN);
 }

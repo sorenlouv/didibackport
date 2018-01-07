@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import isEmpty from 'lodash.isempty';
 import throttle from 'lodash.throttle';
 import styled from 'styled-components';
-import { searchRepositories } from '../services/github';
+import { searchRepositories, incrementRepoCounter } from '../services/github';
 import { LoadingSpinner } from './UI';
 import { fontSizes, px, units } from '../variables';
 
@@ -59,6 +59,10 @@ export default class Repositories extends Component {
     this.searchRepos('');
   }
 
+  incrementRepoCounter = repoId => {
+    incrementRepoCounter(repoId);
+  };
+
   render() {
     const { repositories, isLoading } = this.state;
 
@@ -75,7 +79,10 @@ export default class Repositories extends Component {
             repositories.map(repo => {
               return (
                 <RepositoryContainer key={repo.id}>
-                  <HeaderLink href={`#/${repo.full_name}`}>
+                  <HeaderLink
+                    href={`#/${repo.full_name}`}
+                    onClick={() => this.incrementRepoCounter(repo.id)}
+                  >
                     {repo.name}
                   </HeaderLink>
 
