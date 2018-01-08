@@ -11,7 +11,7 @@ export function searchRepositories(owner, keyword) {
       searchquery: `org:${owner} in:name ${keyword}`
     },
     query: `query ($searchquery: String!) {
-      search(query: $searchquery, type: REPOSITORY, first: 50) {
+      search(query: $searchquery, type: REPOSITORY, first: 20) {
         nodes {
           ... on Repository {
             name
@@ -24,7 +24,6 @@ export function searchRepositories(owner, keyword) {
 }
 
 export function getSortedRepos(repositories) {
-  console.log('getSortedRepos');
   const repoCounts = getCountPerRepo();
 
   const sorted = repositories.concat().sort((a, b) => {
@@ -132,7 +131,7 @@ export function getCommits({ owner, repoName, author = '', size }) {
 
 function withBranches(repository, size) {
   return repository.master.target.history.nodes
-    .slice(0, size - 10) // Hack to avoid getting commits where the backported commit is too old to be in top 100
+    .slice(0, Math.max(size - 10, 10)) // Hack to avoid getting commits where the backported commit is too old to be in top 100
     .map(masterCommit => {
       masterCommit.branches = Object.keys(BRANCHES)
         .map(branchName => {
