@@ -1,7 +1,8 @@
 import React from 'react';
+import get from 'lodash.get';
+import styled from 'styled-components';
 import { Header } from './UI';
 import timeagojs from 'timeago.js';
-import styled from 'styled-components';
 import { units, px } from '../variables';
 import BranchLabels from './BranchLabels';
 
@@ -78,7 +79,7 @@ export default function Commit({ owner, repoName, commit }) {
 }
 
 function parseCommitMessage(commit) {
-  const prNumber = commit.message.split(/\(#(\d+)\)/)[1];
+  const prNumber = get(commit.message.split(/\n\n/)[0].match(/\(#(\d+)\)$/), 1);
   const shortMessage = commit.messageHeadline.split(/\(#(\d+)\)/)[0];
   return { shortMessage, prNumber };
 }
