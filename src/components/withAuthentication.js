@@ -2,7 +2,24 @@ import React, { Component } from 'react';
 import { login, onAuthChangeState } from '../services/firebase';
 import isEmpty from 'lodash.isempty';
 import { LoadingSpinner } from './UI';
-import githubLoginButton from '../github-login-button.png';
+import octocatIcon from '../octocat-icon.png';
+import styled from 'styled-components';
+import { units, px, unit, borderRadius } from '../variables';
+
+const GithubButton = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-size: 30px;
+  width: ${px(unit * 19)};
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: ${borderRadius};
+  cursor: pointer;
+  margin: ${px(units.double)} auto;
+  user-select: none;
+  color: #333;
+`;
 
 function withAuthentication(WrappedComponent) {
   class Authenticate extends Component {
@@ -25,14 +42,10 @@ function withAuthentication(WrappedComponent) {
         <div>
           {!isLoading &&
             !user && (
-              <div style={{ textAlign: 'center' }}>
-                <img
-                  style={{ cursor: 'pointer' }}
-                  src={githubLoginButton}
-                  alt="Login with Github"
-                  onClick={login}
-                />
-              </div>
+              <GithubButton onClick={login}>
+                <div>Sign In With GitHub</div>
+                <img width="25" src={octocatIcon} alt="Login with Github" />
+              </GithubButton>
             )}
           {isLoading && <LoadingSpinner center />}
           {isLoggedIn && <WrappedComponent {...this.props} />}
