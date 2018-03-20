@@ -74,7 +74,7 @@ export default function Commit({ owner, repoName, commit }) {
             >
               {commit.author.name}
             </a>
-          )}
+          )}{' '}
           committed{' '}
           <span title={commit.author.date}>
             {timeago.format(commit.author.date)}
