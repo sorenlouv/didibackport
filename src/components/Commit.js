@@ -63,7 +63,10 @@ export default function Commit({ owner, repoName, commit }) {
 
         <div>
           <a
-            href={`#/${owner}/${repoName}?author=${commit.author.user.id}`}
+            href={`#/${owner}/${repoName}?author=${get(
+              commit.author.user,
+              'id'
+            )}`}
             style={{ color: '#000000' }}
           >
             {commit.author.name}
