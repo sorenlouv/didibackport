@@ -4,7 +4,7 @@
   "homepage": "http://sqren.github.io/didibackport/",
   "private": true,
   "dependencies": {
-    "axios": "^0.17.1",
+    "axios": "^0.18.0",
     "firebase": "^4.8.1",
     "lodash.flatten": "^4.4.0",
     "lodash.get": "^4.4.2",
@@ -14,7 +14,7 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.17",
+    "react-scripts": "1.1.1",
     "styled-components": "^2.4.0",
     "timeago.js": "^3.0.2"
   },

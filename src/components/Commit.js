@@ -26,13 +26,18 @@ const Avatar = styled.img`
   width: 72px;
 `;
 
+function getAvatarUrlWithSize(avatarUrl) {
+  return avatarUrl.includes('?') ? `${avatarUrl}&s=72` : `${avatarUrl}?s=72`;
+}
+
 export default function Commit({ owner, repoName, commit }) {
   const { shortMessage, prNumber } = parseCommitMessage(commit);
+  const authorId = get(commit.author.user, 'id');
   return (
     <CommitContainer key={commit.oid}>
       <div>
         <Avatar
-          src={`${commit.author.avatarUrl}&s=72`}
+          src={getAvatarUrlWithSize(commit.author.avatarUrl)}
           alt={commit.author.name}
         />
       </div>
@@ -62,15 +67,14 @@ export default function Commit({ owner, repoName, commit }) {
         <BranchLabels owner={owner} repoName={repoName} commit={commit} />
 
         <div>
-          <a
-            href={`#/${owner}/${repoName}?author=${get(
-              commit.author.user,
-              'id'
-            )}`}
-            style={{ color: '#000000' }}
-          >
-            {commit.author.name}
-          </a>{' '}
+          {authorId && (
+            <a
+              href={`#/${owner}/${repoName}?author=${authorId}`}
+              style={{ color: '#000000' }}
+            >
+              {commit.author.name}
+            </a>
+          )}
           committed{' '}
           <span title={commit.author.date}>
             {timeago.format(commit.author.date)}
